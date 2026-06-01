@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HK Trip">
+<link id="app-icon" rel="apple-touch-icon">
+<link id="favicon" rel="icon" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HK Trip 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
@@ -800,12 +805,108 @@ function fmtAmt(n){return Number.isInteger(n)?fmt(n):fmt(Math.round(n*100)/100);
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 
+
+/* ── App Icon ── */
+function makeIcon(){
+  const c=document.createElement('canvas');
+  c.width=512;c.height=512;
+  const x=c.getContext('2d');
+
+  /* Background - dark red */
+  x.fillStyle='#6E1010';
+  x.fillRect(0,0,512,512);
+
+  /* Subtle texture lines */
+  x.strokeStyle='rgba(255,220,180,0.07)';
+  x.lineWidth=1.5;
+  for(let y=0;y<512;y+=16){
+    x.beginPath();x.moveTo(0,y);x.lineTo(512,y);x.stroke();
+  }
+
+  /* Outer border */
+  x.strokeStyle='#F0E0C0';
+  x.lineWidth=10;
+  x.strokeRect(14,14,484,484);
+
+  /* Inner border */
+  x.lineWidth=2.5;
+  x.strokeRect(28,28,456,456);
+
+  /* Top strip */
+  x.fillStyle='rgba(0,0,0,0.30)';
+  x.fillRect(14,14,484,68);
+
+  /* "HUA & WEI TRIP" */
+  x.fillStyle='rgba(240,224,192,0.90)';
+  x.font='bold 26px Arial,sans-serif';
+  x.textAlign='center';
+  x.textBaseline='middle';
+  x.letterSpacing='4px';
+  x.fillText('HUA & WEI TRIP',256,48);
+
+  /* Stars flanking text */
+  x.font='18px Arial';
+  x.fillStyle='rgba(240,200,120,0.85)';
+  x.fillText('★',72,48);
+  x.fillText('★',440,48);
+
+  /* Top/body separator */
+  x.strokeStyle='rgba(240,224,192,0.6)';
+  x.lineWidth=1.5;
+  x.beginPath();x.moveTo(40,82);x.lineTo(472,82);x.stroke();
+
+  /* Large 香 */
+  x.fillStyle='#F0E0C0';
+  x.font='bold 210px serif';
+  x.textAlign='left';
+  x.textBaseline='middle';
+  x.fillText('香',22,295);
+
+  /* Large 港 */
+  x.textAlign='right';
+  x.fillText('港',490,295);
+
+  /* Center dot */
+  x.fillStyle='rgba(240,200,120,0.70)';
+  x.font='bold 32px serif';
+  x.textAlign='center';
+  x.fillText('·',256,295);
+
+  /* Body/bottom separator */
+  x.strokeStyle='rgba(240,224,192,0.6)';
+  x.lineWidth=1.5;
+  x.beginPath();x.moveTo(40,418);x.lineTo(472,418);x.stroke();
+
+  /* Bottom strip */
+  x.fillStyle='rgba(0,0,0,0.30)';
+  x.fillRect(14,418,484,80);
+
+  /* "HONG KONG · 2026" */
+  x.fillStyle='rgba(240,224,192,0.90)';
+  x.font='bold 24px Arial,sans-serif';
+  x.textAlign='center';
+  x.textBaseline='middle';
+  x.letterSpacing='4px';
+  x.fillText('HONG KONG  ·  2026',256,458);
+
+  return c.toDataURL('image/png');
+}
+
+function setAppIcon(){
+  try{
+    const d=makeIcon();
+    const ai=document.getElementById('app-icon');
+    const fi=document.getElementById('favicon');
+    if(ai)ai.href=d;
+    if(fi)fi.href=d;
+  }catch(e){console.warn('icon',e);}
+}
 /* INIT */
 function init(){
   if(!S.packing.length)S.packing=JSON.parse(JSON.stringify(DEFAULT_PACKING));
   const hasItin=S.itinerary[1].length||S.itinerary[2].length||S.itinerary[3].length;
   if(!hasItin)S.itinerary=JSON.parse(JSON.stringify(DEFAULT_ITINERARY));
-  render();initFbSync();fetchWeather();
+  setAppIcon();render();initFbSync();fetchWeather();
 }
 init();
 </script>
